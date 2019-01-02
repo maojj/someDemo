@@ -10,6 +10,7 @@
             "args": [
                 "-g",
                 "cal.c",
+                "reversePolish.c",
                 "-o",
                 "cal.exe"
             ],
@@ -24,6 +25,7 @@
             "args": [
                 "-g",
                 "cal.c",
+                "reversePolish.c",
                 "-o",
                 "cal.exe"
             ],

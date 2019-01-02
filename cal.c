@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "reversePolish.h"
 
 //typedef int uint8_t;
 //typedef int uint16_t;
@@ -7,18 +8,18 @@
 #define MAXLENGTH 10
 #define MAXHIEGHT 20
 
-void printDigitals(uint8_t digitals[MAXHIEGHT][MAXLENGTH]) {
-    uint8_t x,y;
+void printDigitals(uint8_t digitals[MAXHIEGHT][MAXLENGTH])
+{
+    uint8_t x, y;
     for (x = 0; x < MAXHIEGHT; x++)
     {
-        for (y = 0;  y < MAXLENGTH; y++)
+        for (y = 0; y < MAXLENGTH; y++)
         {
             printf("%d ", digitals[x][MAXLENGTH - 1 - y]);
         }
         printf("\n");
     }
 }
-
 
 uint8_t calNum(uint32_t number, uint8_t *buffer, uint8_t bufferSize)
 {
@@ -32,11 +33,13 @@ uint8_t calNum(uint32_t number, uint8_t *buffer, uint8_t bufferSize)
     return index;
 }
 
-uint32_t calValue(uint8_t *buffer, uint8_t bufferSize) {
+uint32_t calValue(uint8_t *buffer, uint8_t bufferSize)
+{
     uint32_t result = 0;
     uint32_t factor = 1;
     uint8_t y = 0;
-    while(y < bufferSize) {
+    while (y < bufferSize)
+    {
         result += buffer[y] * factor;
         factor *= 10;
         y++;
@@ -44,16 +47,17 @@ uint32_t calValue(uint8_t *buffer, uint8_t bufferSize) {
     return result;
 }
 
-
 // 对矩形区域所在的 endX-startX 行 进行累加， 结果存入 endX + 1 行中
-void addDigitals(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY) {
-    uint8_t x,y;
+void addDigitals(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY)
+{
+    uint8_t x, y;
     uint8_t tempSum;
     uint8_t targetX = endX + 1;
 
     // 结果位置清零
-    for(y= startY; y<=endY; y++ ) {
-        digitals[targetX][y]=0;
+    for (y = startY; y <= endY; y++)
+    {
+        digitals[targetX][y] = 0;
     }
 
     // 按列求和
@@ -70,11 +74,12 @@ void addDigitals(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX, uint8_t
     }
 }
 
-void minus(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY) {
+void minus(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY)
+{
     uint32_t total = calValue(&digitals[startX][startY], endY - startY + 1);
     uint32_t temp;
     uint8_t x = startX + 1;
-    for(; x <= endX; x++)
+    for (; x <= endX; x++)
     {
         temp = calValue(&digitals[x][startY], endY - startY + 1);
         total -= temp;
@@ -97,10 +102,12 @@ void calTwoMulti(uint32_t number1, uint32_t number2, uint8_t digitals[MAXHIEGHT]
     uint8_t lastLineMaxLength;
     uint8_t tempSum;
 
-    for(x=0;x<MAXHIEGHT;x++) {
-        for(y=0;y<MAXLENGTH;y++) {
-            digitals[x][y]=0;
-            status[x][y]=0;
+    for (x = 0; x < MAXHIEGHT; x++)
+    {
+        for (y = 0; y < MAXLENGTH; y++)
+        {
+            digitals[x][y] = 0;
+            status[x][y] = 0;
         }
     }
 
@@ -138,7 +145,8 @@ void calTwoMulti(uint32_t number1, uint32_t number2, uint8_t digitals[MAXHIEGHT]
     addDigitals(digitals, 2, 0, sumIndex - 1, lastLineMaxLength);
 }
 
-void calTwoDivide(uint32_t dividend, uint32_t divisor,  uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t status[MAXHIEGHT][MAXLENGTH]) {
+void calTwoDivide(uint32_t dividend, uint32_t divisor, uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t status[MAXHIEGHT][MAXLENGTH])
+{
     uint8_t length1;
     uint8_t length2;
     uint32_t tempResult;
@@ -155,10 +163,12 @@ void calTwoDivide(uint32_t dividend, uint32_t divisor,  uint8_t digitals[MAXHIEG
     int8_t startY;
     int8_t endY;
 
-    for(x=0;x<MAXHIEGHT;x++) {
-        for(y=0;y<MAXLENGTH;y++) {
-            digitals[x][y]=0;
-            status[x][y]=0;
+    for (x = 0; x < MAXHIEGHT; x++)
+    {
+        for (y = 0; y < MAXLENGTH; y++)
+        {
+            digitals[x][y] = 0;
+            status[x][y] = 0;
         }
     }
 
@@ -187,24 +197,27 @@ void calTwoDivide(uint32_t dividend, uint32_t divisor,  uint8_t digitals[MAXHIEG
 
     // 找到商最高位， 开始每一位乘以除数， 填入下一行，计算差， 补齐后继续。
     index = MAXLENGTH - 1;
-    while(index > 0 && digitals[1][index] == 0) {
+    while (index > 0 && digitals[1][index] == 0)
+    {
         index--;
     }
 
     x = 3; // 第四行开始
-    for(y = index;y >= 0; y--) {
+    for (y = index; y >= 0; y--)
+    {
         // 计算出商的每一位与除数的乘积， 然后想减
         tempResult = digitals[1][y] * divisor;
         tempLength = calNum(tempResult, &digitals[x][y], MAXLENGTH - y);
 
         startY = y;
         endY = y + tempLength + 1;
-        minus(digitals, x - 1, startY ,x, endY);
+        minus(digitals, x - 1, startY, x, endY);
 
         x++;
-        if(y > 0) {
+        if (y > 0)
+        {
             // 减完后，补一位,进行下次循环
-            digitals[x][y-1] = digitals[2][y-1];
+            digitals[x][y - 1] = digitals[2][y - 1];
         }
         x++;
     }
@@ -224,6 +237,10 @@ int main()
     printf("\ndivide\n");
     calTwoDivide(98737, 34, dis, stats);
     printDigitals(dis);
+
+    char input[INPUT_MAX_LENGTH];
+    sprintf(input, "2*(10-(5-3)*6/4+1)-1");
+    parseReversePolish(input);
 
     return 0;
 }
