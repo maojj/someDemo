@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-typedef int uint8_t;
-typedef int uint16_t;
-typedef int uint32_t;
+//typedef int uint8_t;
+//typedef int uint16_t;
+//typedef int uint32_t;
 
 #define MAXLENGTH 10
 #define MAXHIEGHT 20
@@ -11,9 +11,9 @@ void printDigitals(uint8_t digitals[MAXHIEGHT][MAXLENGTH]) {
     uint8_t x,y;
     for (x = 0; x < MAXHIEGHT; x++)
     {
-        for (y = MAXLENGTH - 1; y >= 0; y--)
+        for (y = 0;  y < MAXLENGTH; y++)
         {
-            printf("%d ", digitals[x][y]);
+            printf("%d ", digitals[x][MAXLENGTH - 1 - y]);
         }
         printf("\n");
     }
@@ -143,17 +143,17 @@ void calTwoDivide(uint32_t dividend, uint32_t divisor,  uint8_t digitals[MAXHIEG
     uint8_t length2;
     uint32_t tempResult;
     uint8_t tempLength;
-    uint8_t index;
-    uint8_t x;
-    uint8_t y;
-    uint8_t j;
+    int8_t index;
+    int8_t x;
+    int8_t y;
+    int8_t j;
     uint8_t sumIndex;
     uint8_t lastLineMaxLength;
     uint8_t tempSum;
     uint32_t quotient;
     uint32_t remainder;
-    uint8_t startY;
-    uint8_t endY;
+    int8_t startY;
+    int8_t endY;
 
     for(x=0;x<MAXHIEGHT;x++) {
         for(y=0;y<MAXLENGTH;y++) {
@@ -187,7 +187,7 @@ void calTwoDivide(uint32_t dividend, uint32_t divisor,  uint8_t digitals[MAXHIEG
 
     // 找到商最高位， 开始每一位乘以除数， 填入下一行，计算差， 补齐后继续。
     index = MAXLENGTH - 1;
-    while(index >= 0 && digitals[1][index] == 0) {
+    while(index > 0 && digitals[1][index] == 0) {
         index--;
     }
 

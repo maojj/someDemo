@@ -1,19 +1,33 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "echo",
-            "type": "shell",
+            // 默认第一条为编译命令
+            "taskName": "build",
+            // 使用 g++ 编译
             "command": "gcc",
+            // 参数包含所有使用到的源文件
             "args": [
-                "cal.c", "-o", "cal.out", "-g"
+                "-g",
+                "cal.c",
+                "-o",
+                "cal.exe"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
+            // 默认在 shell 中执行编译命令
+            "type": "shell"
+        },
+        {
+            // 编译 debug 用的目标文件
+            "taskName": "build-debug",
+            "command": "gcc",
+            // -g 参数用于编译可 debug 的目标文件
+            "args": [
+                "-g",
+                "cal.c",
+                "-o",
+                "cal.exe"
+            ],
+            "type": "shell"
         }
     ]
 }
