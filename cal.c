@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "reversePolish.h"
 
-//typedef int uint8_t;
-//typedef int uint16_t;
-//typedef int uint32_t;
+typedef int uint8_t;
+typedef int uint16_t;
+typedef int uint32_t;
 
 #define MAXLENGTH 10
 #define MAXHIEGHT 20
@@ -48,7 +48,8 @@ uint32_t calValue(uint8_t *buffer, uint8_t bufferSize)
 }
 
 // 对矩形区域所在的 endX-startX 行 进行累加， 结果存入 endX + 1 行中
-void addDigitals(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY)
+void addDigitals(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX,
+                 uint8_t startY, uint8_t endX, uint8_t endY)
 {
     uint8_t x, y;
     uint8_t tempSum;
@@ -74,7 +75,8 @@ void addDigitals(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX, uint8_t
     }
 }
 
-void minus(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY)
+void minus(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX,
+           uint8_t startY, uint8_t endX, uint8_t endY)
 {
     uint32_t total = calValue(&digitals[startX][startY], endY - startY + 1);
     uint32_t temp;
@@ -88,7 +90,9 @@ void minus(uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t startX, uint8_t start
     calNum(total, &digitals[endX + 1][startY], endY - startY + 1);
 }
 
-void calTwoMulti(uint32_t number1, uint32_t number2, uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t status[MAXHIEGHT][MAXLENGTH])
+void calTwoMulti(uint32_t number1, uint32_t number2,
+                 uint8_t digitals[MAXHIEGHT][MAXLENGTH],
+                 uint8_t status[MAXHIEGHT][MAXLENGTH])
 {
     uint8_t length1;
     uint8_t length2;
@@ -129,7 +133,8 @@ void calTwoMulti(uint32_t number1, uint32_t number2, uint8_t digitals[MAXHIEGHT]
     for (index = 0; index < length2; index++)
     {
         tempResult = number1 * digitals[1][index];
-        tempLength = calNum(tempResult, &digitals[2 + index][index], MAXLENGTH - index);
+        tempLength =
+            calNum(tempResult, &digitals[2 + index][index], MAXLENGTH - index);
         for (j = index; j < index + tempLength; j++)
         {
             status[2 + index][j] = 2; // 答案，也就是用户输入框，该用户填入
@@ -145,7 +150,9 @@ void calTwoMulti(uint32_t number1, uint32_t number2, uint8_t digitals[MAXHIEGHT]
     addDigitals(digitals, 2, 0, sumIndex - 1, lastLineMaxLength);
 }
 
-void calTwoDivide(uint32_t dividend, uint32_t divisor, uint8_t digitals[MAXHIEGHT][MAXLENGTH], uint8_t status[MAXHIEGHT][MAXLENGTH])
+void calTwoDivide(uint32_t dividend, uint32_t divisor,
+                  uint8_t digitals[MAXHIEGHT][MAXLENGTH],
+                  uint8_t status[MAXHIEGHT][MAXLENGTH])
 {
     uint8_t length1;
     uint8_t length2;

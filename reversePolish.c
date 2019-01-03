@@ -1,9 +1,9 @@
 #include "reversePolish.h"
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-// method3: https://zh.wikipedia.org/wiki/%E8%B0%83%E5%BA%A6%E5%9C%BA%E7%AE%97%E6%B3%95
+// method3:
+// https://zh.wikipedia.org/wiki/%E8%B0%83%E5%BA%A6%E5%9C%BA%E7%AE%97%E6%B3%95
 // method2: https://blog.csdn.net/QZC295919009/article/details/23799369
 // method1: https://blog.csdn.net/bhq2010/article/details/7516369
 
@@ -39,7 +39,8 @@ int getPriority(char name)
     switch (name)
     {
     case 'f':
-    case 'F': // 分式函数符， f(x,y) = x/y , F(x,y,z) = x+y/z 如三又二分之一, F(3,1,2)
+    case 'F': // 分式函数符， f(x,y) = x/y , F(x,y,z) = x+y/z 如三又二分之一,
+              // F(3,1,2)
         return 4;
     case '!':
         return 3;
@@ -171,7 +172,7 @@ void saveOperator(char op)
 }
 
 //将输入字符串中的以0-9开头、到下一个运算符结束的一段转化为浮点型
-//i加上浮点型对应的字符串的长度
+// i加上浮点型对应的字符串的长度
 double getNumFromString(char *s, int *i)
 {
     int j = 0;
@@ -198,10 +199,11 @@ double getNumFromString(char *s, int *i)
 
 void method1(char input[MAX_STRING_LENGTH])
 {
-    //char input[MAX_STRING_LENGTH];//表达式的输入串
+    // char input[MAX_STRING_LENGTH];//表达式的输入串
     int i, priority;
 
-    char op, topOp; //op为从当前输入串中提取的一个运算符，topOp为运算符栈栈顶的运算符
+    char op,
+        topOp; // op为从当前输入串中提取的一个运算符，topOp为运算符栈栈顶的运算符
     topOp = '#';
     pushOperator(topOp); //压入#作为初始运算符
 
@@ -235,7 +237,8 @@ void method1(char input[MAX_STRING_LENGTH])
             }
             else if (op == ')')
             {
-                //如果是')'，则把运算符栈顶元素依次弹出，并存入结果队列中，直至第一次遇到左括号'('， 左右括号都会丢掉。
+                //如果是')'，则把运算符栈顶元素依次弹出，并存入结果队列中，直至第一次遇到左括号'('，
+                //左右括号都会丢掉。
                 while (topOp != '(')
                 {
                     popOperator();
@@ -314,14 +317,16 @@ double envalueReversePolish()
                 double number3 = resultQueue[resultQueueTail--];
                 double number2 = resultQueue[resultQueueTail--];
                 double number1 = resultQueue[resultQueueTail--];
-                resultQueue[++resultQueueTail] = opertate3Num(number1, number2, number3, node.op);
+                resultQueue[++resultQueueTail] =
+                    opertate3Num(number1, number2, number3, node.op);
             }
             else if (count == 2)
             {
                 double number2 = resultQueue[resultQueueTail--];
                 double number1 = resultQueue[resultQueueTail--];
 
-                resultQueue[++resultQueueTail] = opertate2Num(number1, number2, node.op);
+                resultQueue[++resultQueueTail] =
+                    opertate2Num(number1, number2, node.op);
             }
             // 暂时不支持单目运算符
         }
@@ -334,9 +339,9 @@ double envalueReversePolish()
 
 void parseReversePolish(char inputString[INPUT_MAX_LENGTH])
 {
-    char input[INPUT_MAX_LENGTH]
+    char input[INPUT_MAX_LENGTH];
 
-        sprintf(input, "1-F(1,1,2)+F(3,F(3,1,2),f(1,4))*f(1,2)");
+    sprintf(input, "1-F(1,1,2)+F(3,F(3,1,2),f(1,4))*f(1,2)");
     method1(input);
     double result = envalueReversePolish();
     getchar();
