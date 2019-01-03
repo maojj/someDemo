@@ -28,9 +28,6 @@ typedef struct ExpNodeStrut ExpNode;
 ExpNode expQueue[EXP_STACK_LENGTH];
 int expQueuekTail = -1;
 
-double resultQueue[EXP_STACK_LENGTH];
-int resultQueueTail = -1;
-
 //运算符栈
 char opStack[OPSTACK_LENGTH];
 //运算符栈顶指针
@@ -39,42 +36,62 @@ int opStackTop = -1;
 //获取一个字符所代表的运算符的优先级
 int getPriority(char name)
 {
-    if (name == '(' || name == ')')
-    {
-        return 0;
+    switch(name) {
+        case 'f': case 'F': // 分式函数符， f(x,y) = x/y , F(x,y,z) = x+y/z 如三又二分之一, F(3,1,2)
+            return 4;
+        case '!':
+            return 3;
+        case '*': case '/':
+            return 2;
+        case '+': case '-':
+            return 1;
+        default:
+            return 0;
     }
-    if (name == '!')
-    {
-        return 3;
-    }
-    if (name == '*' || name == '/')
-    {
-        return 2;
-    }
-    if (name == '+' || name == '-')
-    {
-        return 1;
-    }
-    
-    return 0;
 }
 //获取一个字符所代表的运算符的目数
 int getOpNum(char name)
 {
-    if (name == '*' || name == '/' || name == '+' || name == '-')
-    {
-        return 2;
+    switch(name) {
+        case 'F':
+            return 3;
+        case 'f':
+        case '*': case '/': case '+': case '-':
+            return 2;
+        default:
+            return 0;
     }
-    if (name == '!')
+}
+
+// 两个数的运算
+double opertate2Num(double num1, double num2, char op)
+{
+    switch(op) 
     {
-        return 1;
+        case  '+':
+            return num1 + num2;
+        case '-':
+            return num1 - num2;
+        case '*':
+            return num1 * num2;
+        case '/':
+        case 'f':
+            return num1 / num2;
+        default:
+            return 0;
     }
-    if (name == '(' || name == ')')
+}
+
+// 三个数的运算
+double opertate3Num(double num1, double num2, double num3, char op)
+{
+    switch(op) 
     {
-        return 0;
+        case  'F':
+            return num1 + num2 / num3;
+        default:
+            return 0;
     }
-    
-    return 0;
 }
 
 //运算符压栈
@@ -182,6 +199,12 @@ void method1(char input[MAX_STRING_LENGTH])
     for (i = 0; input[i] != '\0' && input[i] != '=';)
     {
         char c = input[i];
+
+        if(c == ' ' || c == ',') {
+            i++;
+            continue;
+        }
+
 		//从输入串中取出一个字符作为开始，进行处理，直到表达式结束
         if (c >= '0' && c <= '9')
         {
@@ -244,7 +267,7 @@ void method1(char input[MAX_STRING_LENGTH])
 
     printf("\nintput: %s", input);
 
-    printf("\r\n reverse polish");
+    printf("\r\nreverse polish:");
     for(int i = 0; i <= expQueuekTail; i++ ) {
         ExpNode node = expQueue[i];
         if(node.type == 0) {
@@ -253,36 +276,33 @@ void method1(char input[MAX_STRING_LENGTH])
             printf("%d ", (int)node.num);
         }
     }
-        printf("\r\n");
+    
+    printf("\r\n");
 
-}
-
-double opertate2Num(double num1, double num2, char op)
-{
-    switch(op) 
-    {
-        case  '+':
-            return num1 + num2;
-        case '-':
-            return num1 - num2;
-        case '*':
-            return num1 * num2;
-        case '/':
-            return num1 / num2;
-        default:
-            return 0;
-    }
 }
 
 double envalueReversePolish(){
-    for(int i = 0; i< expQueuekTail; i++) {
+    double resultQueue[EXP_STACK_LENGTH];
+    int resultQueueTail = -1;
+
+    for(int i = 0; i<= expQueuekTail; i++) {
         ExpNode node = expQueue[i];
         if(node.type == 1) {
             resultQueue[++resultQueueTail] = node.num;
         } else {
-            double number2 = resultQueue[resultQueueTail--];
-            double number1 = resultQueue[resultQueueTail--];
-            resultQueue[++resultQueueTail] = opertate2Num(number1, number2, node.op);
+            int count = getOpNum(node.op);
+            if(count == 3) {
+                double number3 = resultQueue[resultQueueTail--];
+                double number2 = resultQueue[resultQueueTail--];
+                double number1 = resultQueue[resultQueueTail--];
+                resultQueue[++resultQueueTail] = opertate3Num(number1, number2, number3, node.op);
+            } else if(count == 2) {
+                double number2 = resultQueue[resultQueueTail--];
+                double number1 = resultQueue[resultQueueTail--];
+            
+                resultQueue[++resultQueueTail] = opertate2Num(number1, number2, node.op);
+            }
+            // 暂时不支持单目运算符
         }
     }
 
@@ -292,9 +312,12 @@ double envalueReversePolish(){
 }
 
 
-void parseReversePolish(char string[INPUT_MAX_LENGTH])
+void parseReversePolish(char inputString[INPUT_MAX_LENGTH])
 {
-    method1(string);
+    char input[INPUT_MAX_LENGTH];
+    
+    sprintf(input, "1-F(1,1,2)+F(3,F(3,1,2),f(1,4))*f(1,2)");
+    method1(input);
     double result = envalueReversePolish();
     getchar();
 }
